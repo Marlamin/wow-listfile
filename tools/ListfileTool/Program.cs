@@ -423,7 +423,7 @@ namespace ListfileTool
             if (File.Exists(withCapitalOutput))
                 File.Move(withCapitalOutput, Path.Combine(outputDir, "community-listfile-withcapitals-old.csv"));
 
-            File.WriteAllText(withCapitalOutput, string.Join("\n", mergedListfile.Select(x => x.Key + ";" + x.Value.Replace("\\", "/"))) + "\r\n");
+            File.WriteAllText(withCapitalOutput, string.Join("\r\n", mergedListfile.Select(x => x.Key + ";" + x.Value.Replace("\\", "/"))) + "\r\n");
 
             var sizeWithCase = new FileInfo(withCapitalOutput).Length;
             if (sizeWithCase > 100 * 1024 * 1024)
@@ -438,7 +438,7 @@ namespace ListfileTool
                 File.Delete(Path.Combine(outputDir, "community-listfile-withcapitals-old.csv"));
             }
 
-            File.WriteAllText(Path.Combine(outputDir, "community-listfile.csv"), string.Join("\n", mergedListfile.Select(x => x.Key + ";" + x.Value.ToLower().Replace("\\", "/"))) + "\r\n");
+            File.WriteAllText(Path.Combine(outputDir, "community-listfile.csv"), string.Join("\r\n", mergedListfile.Select(x => x.Key + ";" + x.Value.ToLower().Replace("\\", "/"))) + "\r\n");
         }
     }
 }
