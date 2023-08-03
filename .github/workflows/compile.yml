@@ -58,5 +58,5 @@ jobs:
         prerelease: false
         tag_name: ${{ env.NOW }}    
         files: |
-            community-listfile.csv
-            community-listfile-withcapitals.csv
+            tmp/community-listfile.csv
+            tmp/community-listfile-withcapitals.csv
