@@ -1,29 +1,11 @@
 name: Compile & release listfile
-
 on:
   push:
     paths:
       -  parts/**
 jobs:
-  create_tag:
-    name: Create Tag
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set tag name
-        run: echo "NOW=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
-      - name: Create tag
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ env.NOW }}',
-              sha: context.sha
-            })
   compile-repo-listfile:
     name: Build repo listfile
-    needs: create_tag
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
@@ -43,9 +25,20 @@ jobs:
         file_pattern: '*.csv'
   compile-release-listfile:
     name: Build release listfile
-    needs: create_tag
     runs-on: ubuntu-latest
     steps:
+    - name: Set tag name
+      run: echo "NOW=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+    - name: Create tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.NOW }}',
+              sha: context.sha
+          })
     - name: Checkout repo
       uses: actions/checkout@v3
       with:
