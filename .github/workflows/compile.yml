@@ -4,10 +4,9 @@ on:
   push:
     paths:
       -  parts/**
-
 jobs:
-  create_tag_and_release:
-    name: Create Release
+  create_tag:
+    name: Create Tag
     runs-on: ubuntu-latest
     steps:
       - name: Set tag name
@@ -22,17 +21,9 @@ jobs:
               ref: 'refs/tags/${{ env.NOW }}',
               sha: context.sha
             })
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v0.1.13
-        with:
-          name: ${{ env.NOW }}
-          draft: false
-          prerelease: false
-          tag_name: ${{ env.NOW }}
   compile-repo-listfile:
     name: Build repo listfile
-    needs: create_tag_and_release
+    needs: create_tag
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
@@ -52,7 +43,7 @@ jobs:
         file_pattern: '*.csv'
   compile-release-listfile:
     name: Build release listfile
-    needs: create_tag_and_release
+    needs: create_tag
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
@@ -65,8 +56,12 @@ jobs:
         dotnet-version: 7.0.x
     - name: Compile with ListfileTool
       run: mkdir $PWD/tmp && dotnet run --project $PWD/tools/ListfileTool --configuration Release -- compile $PWD/parts $PWD/tmp
-    - name: Release
+    - name: Create Release
+      id: create_release
       uses: softprops/action-gh-release@v0.1.13
       with:
-        tag_name: ${{ env.NOW }}
+        name: Full listfile v${{ env.NOW }}
+        draft: false
+        prerelease: false
+        tag_name: ${{ env.NOW }}    
         files: $PWD/tmp/*.csv
