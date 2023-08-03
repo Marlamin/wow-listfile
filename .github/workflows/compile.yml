@@ -29,7 +29,7 @@ jobs:
           name: ${{ env.NOW }}
           draft: false
           prerelease: false
-          generate_release_notes: false
+          tag_name: ${{ env.NOW }}
   compile-repo-listfile:
     name: Build repo listfile
     needs: create_tag_and_release
